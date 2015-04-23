@@ -4,7 +4,7 @@ Talks at this meeting were:
 ## Introduction to Reproducible Research in R and R Studio (Susan Johnston)
 Conducting reproducible and transparent research is not only good scientific practise, it also makes life much easier. R and the RStudio environment contain a number of useful tools for producing reproducible research, from dynamic report writing in R markdown and knitr, to integrated version control of data and analyses using git. I'll present a quick-start guide on the basics that RStudio has to offer for reproducible research, aimed at all levels of R expertise.
 
-* PDF slides: [./Johnston_IntroReproducibleResearchRstudio](Johnston_IntroReproducibleResearchRstudio.pdf)
+* [PDF slides](Johnston_IntroReproducibleResearchRstudio.pdf)
 
 ## Interfacing C with R (Jarrod Hadfield)
 
