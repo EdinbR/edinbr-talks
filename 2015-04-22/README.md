@@ -10,4 +10,4 @@ Conducting reproducible and transparent research is not only good scientific pra
 
 Pure R code is fast to develop but can be very slow to run. Many R functions therefore call lower level languages such as C. I'll give a worked example of how to do this: and hopefully persuade people its not too difficult and often worth the extra effort.
 
-* Slides not yet available.
+* [PDF slides](Hadfield_InterfacingRwithC.pdf)
