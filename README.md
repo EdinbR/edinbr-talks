@@ -8,3 +8,5 @@ Slides or notes from presentations given at [EdinbR](http://edinbr.org) meetings
 * [How (not to) Submit A Package to CRAN](2015-03-18/Sterratt_HowNotToSubmitAProjectToCRAN.pdf) by David C. Sterratt
 * [Reproducible Research in R and RStudio](2015-04-22/Johnston_IntroReproducibleResearchRstudio.pdf) by Susan Johnston
 * [Interfacing R with C](2015-04-22/Hadfield_InterfacingRwithC.pdf) by Jarrod Hadfield
+* [Introduction to R-Shiny](2015-05-20/Kerr_IntroductionToRShiny.pdf) by Alastair Kerr
+* [Interactive charts in R](http://blm.io/talks/edinbr_may) by Ben Moore
