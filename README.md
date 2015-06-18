@@ -10,4 +10,4 @@ Slides or notes from presentations given at [EdinbR](http://edinbr.org) meetings
 * [Interfacing R with C](2015-04-22/Hadfield_InterfacingRwithC.pdf) by Jarrod Hadfield
 * [Introduction to R-Shiny](2015-05-20/Kerr_IntroductionToRShiny.pdf) by Alastair Kerr
 * [Interactive charts in R](http://blm.io/talks/edinbr_may) by Ben Moore
-* [Shiny workshop](edinbr-talks/2015-06-17/Campbell_IntroToShinyWorkshop.pptx) by Chris Campbell (Mango Solutions)
+* [Shiny workshop](2015-06-17/Campbell_IntroToShinyWorkshop.pptx) by Chris Campbell (Mango Solutions)
