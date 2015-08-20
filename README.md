@@ -11,3 +11,4 @@ Slides or notes from presentations given at [EdinbR](http://edinbr.org) meetings
 * [Introduction to R-Shiny](2015-05-20/Kerr_IntroductionToRShiny.pdf) by Alastair Kerr
 * [Interactive charts in R](http://blm.io/talks/edinbr_may) by Ben Moore
 * [Shiny workshop](2015-06-17/Campbell_IntroToShinyWorkshop.pptx) by Chris Campbell (Mango Solutions)
+* [R as a scripting language](2015-08-19/DunnDavies_RScripting.pdf) by Hywell Dunn-Davies
