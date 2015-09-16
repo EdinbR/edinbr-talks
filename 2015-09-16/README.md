@@ -12,3 +12,4 @@ Slides available in [Rmarkdown](Kennedy_plyr-talk.Rmd), [Markdown](Kennedy_plyr-
 A very quick introduction to the tm package, for doing text mining. I'll cover reading in data, cleaning the data and some basic analysis you can do in R.
 
 Code and data available at [Mhairi's github page](https://github.com/mhairi/tm_tutorial).
+Slides are [also available in HTML format](https://rawgit.com/mhairi/tm_tutorial/master/text mining.html)
