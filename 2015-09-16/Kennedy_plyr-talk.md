@@ -49,6 +49,8 @@ Split-Apply-Combine
 
 > - ![Split-Apply-Combine](images/split-apply-combine-small.png)
 
+Image copyright [Hadley Wickham](http://courses.had.co.nz/12-oscon/slides/3-transformation.pdf)
+
 The plyr package
 ================
 
