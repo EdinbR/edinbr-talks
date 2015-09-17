@@ -12,3 +12,5 @@ Slides or notes from presentations given at [EdinbR](http://edinbr.org) meetings
 * [Interactive charts in R](http://blm.io/talks/edinbr_may) by Ben Moore
 * [Shiny workshop](2015-06-17/Campbell_IntroToShinyWorkshop.pptx) by Chris Campbell (Mango Solutions)
 * [R as a scripting language](2015-08-19/DunnDavies_RScripting.pdf) by Hywell Dunn-Davies
+* [Introduction to plyr](https://rawgit.com/NikNakk/edinbr-talks/Kennedy-talk/2015-09-16/Kennedy_plyr-talk.html) by [Nick Kennedy](https://github.com/NikNakk)
+* [Analysing text data with R](https://rawgit.com/mhairi/tm_tutorial/master/text mining.html) by [Mhairi McNeill](https://github.com/Mhairi)
