@@ -16,3 +16,5 @@ Slides or notes from presentations given at [EdinbR](http://edinbr.org) meetings
 * [Analysing text data with R](https://rawgit.com/mhairi/tm_tutorial/master/text mining.html) by [Mhairi McNeill](https://github.com/Mhairi)
 * [Interactive heatmaps in R with d3heatmap and plotly](2015-10-21/InteractiveHeatmapsR.pdf) by [Guillaume Devailly](https://github.com/gdevailly)
 * [R Inferno: Traps and flaws of the R language](2015-11-18/Rinferno.pdf) by [Guillaume Devailly](https://github.com/gdevailly), R code [here](2015-11-18/Rinferno.R)
+* [Good Coding Practices In R](2015-11-18/GoodCodingPracticesInR.pdf) by Caterina Constantinescu.
+*[Behaviour Driven Development](2016-02-17/BehaviourDrivenDevelopment.pdf) by Dave Evans. 
