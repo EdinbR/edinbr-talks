@@ -2,7 +2,7 @@
 
 Slides or notes from presentations given at [EdinbR](http://edinbr.org) meetings. Files are organised into folders by meeting date, each folder contains a README with talk abstracts and links to slides (if available).
 
-## Talk list
+## Partial talk list
 
 * [Introduction to ggplot2](https://github.com/chrislad/edinbr) by Christophe Ladroue
 * [How (not to) Submit A Package to CRAN](2015-03-18/Sterratt_HowNotToSubmitAProjectToCRAN.pdf) by David C. Sterratt
@@ -18,3 +18,4 @@ Slides or notes from presentations given at [EdinbR](http://edinbr.org) meetings
 * [R Inferno: Traps and flaws of the R language](2015-11-18/Rinferno.pdf) by [Guillaume Devailly](https://github.com/gdevailly), R code [here](2015-11-18/Rinferno.R)
 * [Good Coding Practices In R](2015-11-18/GoodCodingPracticesInR.pdf) by Caterina Constantinescu.
 * [Behaviour Driven Development](2016-02-17/BehaviourDrivenDevelopment.pdf) by Dave Evans. 
+* Updates to follow.
