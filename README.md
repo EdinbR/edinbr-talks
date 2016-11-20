@@ -2,7 +2,7 @@
 
 Slides or notes from presentations given at [EdinbR](http://edinbr.org) meetings. Files are organised into folders by meeting date, each folder contains a README with talk abstracts and links to slides (if available).
 
-## Partial talk list
+## Partial list of talks
 
 * [Introduction to ggplot2](https://github.com/chrislad/edinbr) by Christophe Ladroue
 * [How (not to) Submit A Package to CRAN](2015-03-18/Sterratt_HowNotToSubmitAProjectToCRAN.pdf) by David C. Sterratt
