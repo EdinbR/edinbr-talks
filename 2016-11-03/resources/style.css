@@ -1,0 +1,31 @@
+/* Sensible font for url */
+.title-slide .uri {
+  font-family: "Lato", sans-serif;
+}
+
+
+hgroup p, li {
+  font-weight: normal;
+   font-size: 1.2em;
+  letter-spacing: -0.01em
+}
+
+
+li li  {
+  font-weight: normal;
+   font-size: 0.9em;
+  letter-spacing: -0.01em
+}
+
+h2 {
+color: #262216;
+font-size: 1.8em;
+ margin-bottom: -0.4em;
+}
+
+
+strong {
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #9F6F34;
+}
