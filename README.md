@@ -23,8 +23,9 @@ Slides or notes from presentations given at [EdinbR](http://edinbr.org) meetings
 
 ## Upcoming talks
 
-* **17th Jan 2018** 
-* **21st Feb**
+* **17th Jan** Mike Spencer, Susan Johnston
+* **21st Feb** 
+
 * **21st Mar**
 * **18th Apr**
 * **16th May**
