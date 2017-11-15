@@ -19,3 +19,13 @@ Slides or notes from presentations given at [EdinbR](http://edinbr.org) meetings
 * [Good Coding Practices In R](2015-11-18/GoodCodingPracticesInR.pdf) by Caterina Constantinescu.
 * [Behaviour Driven Development](2016-02-17/BehaviourDrivenDevelopment.pdf) by Dave Evans. 
 * Updates to follow.
+
+
+## Upcoming talks
+
+* **17th Jan 2018** 
+* **21st Feb**
+* **21st Mar**
+* **18th Apr**
+* **16th May**
+* **20th June**
