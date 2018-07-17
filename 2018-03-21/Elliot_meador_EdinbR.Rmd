@@ -1,0 +1,149 @@
+---
+title: "Creating networks from survey data"
+author: "Elliot Meador"
+date: "28 June 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(igraph)
+library(tidyverse)
+library(RColorBrewer)
+library(visNetwork)
+```
+
+ # Introduction
+
+This code is from a talk I gave at EdinR back in March on using social network analysis with survey data in R. I used some research data in that talk, but here I'll show how networks can be created with any survey-style research. 
+
+First, let's create a network object that looks and behaves like a network of people interacting with another. For this, we use the `igraph` package and the `erdos.renyi.game` function to create a graph that resembles people. We then grab the edge list in dataframe format to use in the subsequent steps. 
+```{r}
+# Realistic graph from scratch ---------------
+set.seed(123456) # for replicabiltiy 
+(g <- erdos.renyi.game(75, .025, loops = F)) # this creates a graph object
+
+g_1 <- induced_subgraph(g, which(degree(g) >= 1)) # this gets rid of any unconnected nodes
+
+V(g_1)$name <- 1:length(V(g_1)) # assign a name to the vertices as an attribute
+```
+
+Let's take a look at the graph, called `g_1`. This can be done using `R`'s base `plot` function
+
+```{r}
+plot(g_1)
+```
+
+`igraph` is best for analysing 'under-the-hood' of graphs, though its plotting functions are very powerful. We'll use `visNetwork` to visualise the graph. But first we need to extract some node attributes. 
+
+Let's use `map`  from the `purrr` package to grab the edges and nodes, both as `tibbles`. The edges `tibble` will be our working dataset and it mimics how data in surveys may be structured. 
+```{r}
+
+g_1_ls <- map(get.data.frame(g_1, 'both'), as_tibble)
+
+edges <- g_1_ls$edges
+
+big_cliques <- cluster_walktrap(g_1) %>% # this bit will allow the gender variable to be
+  membership() %>%                       # non-random in a way that is evident in the graph
+  as.list() %>% 
+  flatten_df() %>% 
+  gather(respondent,community) %>% 
+  mutate(respondent = as.numeric(respondent))
+
+```
+
+A common approach to conducting network analysis with surveys is to have one variable designated as a 'from' variable and another as a 'to' variable. Sometimes these columns are referred to as 'source' and 'target', but they represent the same thing. 'From' is the respondent; and 'to' is the person to whom the respondent goes to for information. Instead of removing them from the graph we will assign them a special attribute so we can recognise them in the graph.
+
+```{r}
+
+# Example data ---------------------
+
+example_df <- edges %>%
+  purrr::set_names('respondent', 'contact_for_info') %>% # create survey style attributes
+  left_join(big_cliques) %>%                             # and graph from data frame.
+  mutate(resp_gender = ifelse(community %in% c(1,2,3), 
+                              'Female', 'Male')) 
+
+```
+
+We use the `graph_from_data_frame` from `igraph` to make a network. `graph_from_data_frame` assumes the first two columns are for constructing the network and assigns the remaining columns as edge attributes. Then we use `dplyr` to merge and mutate the existing attribute dataframe.
+
+```{r}
+example_graph <- graph_from_data_frame(example_df[1:2], directed = T)
+
+```
+
+We now need to extract all nodes from the graph and use this to create a node attribute dataframe. It is highly likely that there will be missing data in networks created from surveys if the `from` variable is left open-ended. Leaving the `from` variable as open-ended (i.e. 'Name one person you go to for information on recylcling . . .') is often neccesary as possible answers are not know to the researcher prior to running the survey.
+
+
+```{r}
+# get the nodes dataset from the graph object
+nodes <- get.data.frame(example_graph, 'vertices') %>%
+  as_tibble() %>%
+  purrr::set_names('respondent') %>%
+  mutate_all(as.numeric)
+
+# get the original survey data and drop the 'to' column
+join_df <- example_df %>% select(-contact_for_info)
+
+# join the nodes data and survey data and change the NA values to unknown
+node_attributes <- left_join(nodes, join_df) %>% 
+  distinct() %>%
+  mutate(resp_gender = ifelse(is.na(.$resp_gender), 'Unknown', resp_gender))
+
+```
+We now have our graph object and a node attributes dataframe we can use to 'decorate' the graph with. First, lets create a color function to assign colors and a rescale function to resize the nodes.
+
+```{r}
+
+#create colors function using RColorBrewer
+Pastel2 <- colorRampPalette(sample(brewer.pal(8, 'Pastel2'),4))
+
+# function to rescale size
+rescale <- function(nchar, low, high) {
+  min_d <- min(nchar)
+  max_d <- max(nchar)
+  rscl <- ((high - low) * (nchar - min_d)) / (max_d - min_d) + low
+  rscl
+}
+
+# use dplyr to color the unique genders and add a column of colors
+# 
+# the degree function is from igraph and grabs each nodes degree
+node_attributes <- node_attributes %>%
+  select(resp_gender) %>%
+  distinct() %>%
+  mutate(color = Pastel2(nrow(.))) %>%
+  right_join(node_attributes) %>%
+  select(respondent, gender = resp_gender, color) %>%
+  mutate(size = rescale(degree(g_1), 10, 50), # sizing graph nodes according to their degree
+         size = ifelse(gender == 'Unknown', 0, size))
+
+
+# We use igraphs bespoke notation to 'decorate' the graph with attributes
+V(g_1)$color <- node_attributes$color
+V(g_1)$size <- node_attributes$size
+V(g_1)$gender <- node_attributes$gender
+
+```
+
+Now that the graph is decorated with the appropriate attributes, we will use the `visNetwork` package to make an interactive graph. `visNetwork` has functions that allow it to work directly with `igraph` graph objects. `visNetwork` uses dataframes to graph, so first we turn the graph into the appropriate dataframe and then plot.
+```{r}
+# Visualise using visNetwork package --------------------------------------
+
+vis_dfs <- toVisNetworkData(g_1)
+
+
+visNetwork(
+  edges = vis_dfs$edges,
+  nodes = vis_dfs$nodes,
+  main  = 'Network example',
+  submain = 'Nodes are sized by degree and\ncoloured by respondent gender'
+) %>%
+  visEdges(arrows = "from", dashes = T) %>%
+  visInteraction(navigationButtons = TRUE) %>%
+  visOptions(highlightNearest = T, selectedBy = 'gender')
+
+
+```
+
