@@ -1,0 +1,41 @@
+---
+title: "Using the debugger in `R` and `RStudio`"
+author: "Christophe Ladroue"
+date: "EdinbR, 21 November 2018"
+output: 
+  ioslides_presentation:
+    incremental: true
+editor_options: 
+  chunk_output_type: console
+---
+## A digression about `warnings`
+
+`warn.R`
+
+# The debugger
+
+## A brief refresher on quick sort
+
+- a classic sorting algorithm
+- basic idea: split the values to be sorted into two sets such that the values in the first set are all less than those in the second set. Iterate.
+
+- <img width="80%" src="theory.png">
+
+
+- <img width="80%" src="example.png">
+
+
+## The debugger in practice
+
+`quicksort.R`
+
+## Summary
+- `warn`:
+    - 0 (default): show the warnings in bulk
+    - 1: show the warnings as they happen
+    - 2: convert warnings to errors
+- the debugger
+    - in `RStudio`: add / remove breakpoints by clicking on the left hand side of the line numbers.
+    - in `R`: call `browser()`. Useful for conditional breakpoints. Don't forget to remove when your code is ready.
+    - in `RStudio`: possibility to break into code when an error occurs.
+- good introduction: https://support.rstudio.com/hc/en-us/articles/205612627-Debugging-with-RStudio
