@@ -1,0 +1,335 @@
+---
+title: "Survival Analysis in R"
+author: "Greg Sutcliffe, Ansible, Red Hat"
+date: "15/05/2019"
+output:
+  ioslides_presentation: 
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 5
+    logo: ansible.png
+#    mathjax: local
+    widescreen: yes
+  beamer_presentation: default
+subtitle: ‘No, you can’t just take the mean…’
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+data(GBSG2, package = "TH.data")
+library(tidyverse)
+library(survival)
+library(survminer)
+
+set.seed(2)
+small_data <- GBSG2 %>%
+  rowid_to_column() %>%
+  sample_n(5) %>%
+  select(rowid,time,cens) %>%
+  mutate(start = 0)
+```
+
+## Who am I?
+
+<div class="columns-2">
+  ![](me.jpg)
+
+- History:
+  - (Ex) Physicist
+  - (Ex) System Administrator
+  - (Ex) Software Developer
+  - (Ex) FOSS Community Manager
+  - Data scientist (~1 year)
+    - **Caveat Emptor!**
+
+- Contact:
+  - https://emeraldreverie.org
+  - https://fosstodon.org/@gwmngilfen
+  - mailto:gsutclif@redhat.com
+</div>
+
+<div class="notes">
+  - caveat emptor! I'm new, this may be wrong
+  - not going to include the maths of SA here
+  - datacamp disclaimer, heidi seibold
+</div>
+
+## Time-to-event data
+
+<div class="columns-2">
+- A study about cancer recurrance
+- Time is recurrance-free time in days
+- An "event" is the cancer recurring (triangle)
+- Otherwise the patient gets a "censored" marker (circle) when they leave the study
+
+- Also applies to *any* other time-to-event data
+  - Unemployment duration
+  - Failure times in equipment, etc.
+  
+```{r}
+small_data %>%
+  ggplot(aes(x=factor(rowid),y=time)) +
+  geom_linerange(aes(ymin=start,ymax=time)) +
+  geom_point(aes(shape=factor(cens),color=factor(cens)),size=4) +
+  coord_flip() +
+  labs(x = 'Patient ID', y = 'Time (Days)',
+       title = 'Breast Cancer patients', caption = 'TH.data / GBSG2',
+       shape = 'Event?', color = 'Event?')
+```
+</div>
+
+## So, about that mean...
+
+- Characterizing censored data is hard
+  - Averages operate on a vector of numbers
+  - So what do we do with the censored ones?
+  - Use them? Extend them? NA them?
+
+<div class="columns-2">
+```{r echo=TRUE}
+print(small_data)
+```
+<br/>
+
+```{r echo=TRUE}
+mean(c(357,1922,867,857,1692))
+mean(c(357,NA,867,NA,NA),na.rm = T)
+```
+</div>
+
+<div class="notes">
+  - also censored data is not normal, times are always positive
+  - sometimes we have different measures of interest
+    - see later for that
+  - So if 1d vecotr doesn't work, perhaps 2d can?
+    - bring in the censor column
+</div>
+
+## Survival Analysis to the rescue
+
+- What is the probability that a breast cancer patient survives longer than 5 years?
+- What is the typical waiting time for a cab?
+- Out of 100 unemployed people, how many do we expect to have a job again after 2 months?
+
+<div class="columns-2">
+![](surv_func.png)
+
+**Theory**
+
+$$
+S(t) = 1 - F(t) = P(T > t)
+$$
+
+**Interpretation**
+
+Probability that duration is greater than $t$
+
+</div>
+
+<div class='notes'>
+- Examples:
+  -Probability to survive beyond time point t.
+  - Probability that the cab takes more than t minutes to arrive.
+</div>
+
+## Survival functions
+
+<div class="columns-2">
+
+**Median**:
+![](surv_func_2.png)
+The median duration is t.
+
+**Proportion at time $t$**:
+![](surv_func_3.png)
+$100 \cdot \hat S(t)$ percent of durations are longer than t.
+
+</div>
+
+<div class='notes'>
+- Medians:
+  - The median survival time is 3.7 years.
+  - Median time until the cab arrives is 3.7 minutes.
+- Times:
+  - 37 percent of all patients survive longer than 4 years.
+  - Alt: 63 percent die within the first 4 years.
+  - Out of 100 cabs, 37 take more than 4 minutes to arrive.
+</div>
+
+## Estimating the survival function
+<div class="columns-2">
+![](surv_func_1.png)
+
+
+```{r}
+small_data %>%
+  ggplot(aes(x=fct_reorder(factor(rowid),-time),y=time)) +
+  geom_linerange(aes(ymin=start,ymax=time)) +
+  geom_point(aes(shape=factor(cens),color=factor(cens)),size=4) +
+  coord_flip() +
+  labs(x = 'Patient ID', y = 'Time (Days)',
+       title = 'Breast Cancer patients', caption = 'TH.data / GBSG2',
+       shape = 'Event?', color = 'Event?')
+```
+</div>
+
+<div class='notes'>
+  - already we start to see the strcture here!
+</div>
+
+## The Kaplan-Meier estimate
+<div class="columns-2">
+```{r}
+km <- survfit(Surv(time,cens) ~ 1,
+              data=small_data)
+
+ggsurvplot(km,conf.int = F,
+           censor.shape = 4,
+           censor.size = 9,
+           risk.table = 'nrisk_cumevents',
+           legend = 'none')
+```
+
+```{r}
+small_data %>%
+  ggplot(aes(x=fct_reorder(factor(rowid),-time),y=time)) +
+  geom_linerange(aes(ymin=start,ymax=time)) +
+  geom_point(aes(shape=factor(cens),color=factor(cens)),size=4) +
+  coord_flip() +
+  labs(x = 'Patient ID', y = 'Time (Days)',
+       title = 'Breast Cancer patients', caption = 'TH.data / GBSG2',
+       shape = 'Event?', color = 'Event?')
+```
+</div>
+
+## The Kaplan-Meier estimate (code)
+
+<div class="columns-2">
+```{r}
+library(survival)
+km <- survfit(Surv(time,cens) ~ 1,
+              data=small_data)
+
+ggsurvplot(km,conf.int = F,
+           censor.shape = 4,
+           censor.size = 9,
+           risk.table = 'nrisk_cumevents',
+           legend = 'none')
+```
+
+```{r eval=FALSE, echo=TRUE}
+km <- survfit(Surv(time,cens) ~ 1,
+              data=small_data)
+
+ggsurvplot(km,conf.int = F,
+           censor.shape = 4,
+           censor.size = 9,
+           risk.table = 'nrisk_cumevents',
+           legend = 'none')
+```
+
+**Formal Definition**
+$$
+\hat S(t) = \prod_{i: t_i < t} \frac{n_i - d_i}{n_i}
+$$
+</div>
+
+## Kaplan-Meier (whole dataset)
+```{r echo=TRUE, fig.height=4, fig.width=9}
+km <- survfit(Surv(time,cens) ~ 1, data = GBSG2)
+ggsurvplot(km, censor = F, conf.int = T, surv.median.line = 'hv', legend = 'none')
+```
+
+## Modelling on factors
+
+```{r eval=FALSE, echo=TRUE}
+km <- survfit(
+  ### <b>
+  Surv(time,cens) ~ 1,
+  ### </b>
+  data = GBSG2)
+```
+
+## Modelling on factors
+
+```{r}
+km <- survfit(
+  ### <b>
+  Surv(time, cens) ~ horTh,
+  ### </b>
+  data = GBSG2)
+```
+
+## Modelling on factors
+
+```{r echo=TRUE, fig.height=3.5, fig.width=10}
+km <- survfit(Surv(time, cens) ~ horTh, data = GBSG2)
+ggsurvplot(km, data = GBSG2, surv.median.line = "hv",
+           legend.title = "Hormone Therapy", legend = 'right',
+           pval = TRUE, conf.int = TRUE
+)
+```
+
+## Things we haven't covered
+
+<div class="columns-2">
+- Weibull model
+  - Smooth function, better for point predictions
+  - Tricky to graph (need to fake-out a data frame)
+
+```{r echo=TRUE}
+wb=survreg(Surv(time, cens)~horTh, GBSG2)
+predict(wb, type = "quantile",
+        p = 1 - 0.9,
+        newdata = data.frame(
+          horTh='yes'))
+```
+
+- Cox Proportional Hazards model
+  - Step function like KM
+  - Takes the values of the covariate(s) into account
+  - Basically same as KM for binary covariates
+  
+```{r fig.height=2}
+fit <- coxph(Surv(time, cens) ~ age, data = GBSG2)
+fit <- survfit(fit, newdata = data.frame(age=c(40,60)))
+ggsurvplot(fit,data=GBSG2,
+           surv.median.line = "hv",
+           legend = 'none',
+           conf.int = TRUE
+)
+```
+</div>
+
+## Example 1 - Code Complexity vs Merge Time {.build .smaller .flexbox .vcenter}
+
+![](lines_of_code.png)
+
+[Original Blog Post](https://theforeman.org/2019/03/merge-time-review-complexity.html)
+
+  Good for CI and comparative plots across predictors
+
+## Example 2 - Merge times in parts of a codebase {.build .smaller .flexbox .vcenter}
+
+![](mergetimes2.png)
+
+[Shiny App](https://stats.eng.ansible.com/apps/mergetimes/)
+
+## {.flexbox .vcenter}
+
+![](ansible_blue.png)
+
+### Thanks!
+<hr/>
+
+<div class="columns-2">
+### Questions?
+- Comments
+- Corrections
+- Future ideas
+  
+### Contact
+- https://emeraldreverie.org
+- https://fosstodon.org/@gwmngilfen
+- mailto:gsutclif@redhat.com
+</div>
