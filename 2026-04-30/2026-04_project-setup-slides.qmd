@@ -1,0 +1,38 @@
+---
+title: "Setting up R for your project"
+author: "Claire Hayman & Mike Spencer"
+format: revealjs
+---
+
+## Rationale
+
+* Making work more portable
+* Improving collaboration
+* Improving reproducibility
+* Saving time and effort
+
+
+## In scope
+
+* A new install (R/IDE/etc.)
+* General analytical project
+* Collaboration (at minimum with future you)
+
+
+## Prompts: non-exhaustive!
+
+* IDE settings
+* Version control & collaboration
+* Directory structure
+* Packages and environments
+* Data sources: online/caching/local
+* Handling outputs
+
+
+## Common improvements or gotchas
+
+* `setwd()` -> RStudio projects
+* `rm(list = ls())` -> `sessioncheck::sessioncheck()`
+* `print()` debugging -> `icecream::ic()`
+
+![](drake.jpg)
